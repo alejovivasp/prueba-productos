@@ -1,0 +1,119 @@
+
+
+.boton-izquierda
+{
+	margin-right: 2px;
+}
+
+td a.button
+{	
+    margin-bottom: 0px;	
+}
+
+.icono-carrito
+{
+	font-size: 2rem;	
+	color: #2d6ca2;
+}
+
+.fila-producto
+{
+	margin-bottom: 0px;
+	padding-bottom: 0.5rem;
+	padding-top: 0.5rem;
+}
+
+@media screen and (max-width: 40em)
+{
+	#DesplegarOcultarFiltro
+	{
+		display:inline;
+	}
+	#Filtros
+	{
+		display:none;
+	}
+}
+
+@media screen and (min-width: 40.1em)
+{
+	#DesplegarOcultarFiltro
+	{
+		display:none !important;
+	}
+	#Filtros
+	{
+		display:inline !important;
+	}
+}
+
+.button
+{
+	border-radius: 5px;
+}
+
+.precio
+{
+	font-weight: bold;
+}
+
+.boton-comprar
+{
+	margin-bottom: 3px;
+}
+
+.boton-deshabilitado
+{
+	font-style: italic;
+}
+
+.ancla-carrito
+{
+	padding-top: 0px !important;
+	padding-bottom: 0px !important;
+}
+
+.row-ancla-carrito-badge
+{
+	text-align: center !important;
+	margin-bottom: -6px;	
+}
+
+.ancla-carrito-badge
+{
+	font-size: 0.45rem !important;
+	background-color: #2d6ca2;
+}
+
+.titulo-nombre-producto
+{
+	 text-transform: capitalize;
+}
+
+select.ordenamiento
+{	
+    margin-bottom: 0px;	
+}
+
+.icono-borrar
+{
+	color: red;
+    font-size: 1.4rem;
+}
+
+.button
+{
+	background-image: linear-gradient(to bottom, #428bca 0%, #2d6ca2 100%);
+}
+
+a.secondary
+{
+	background-image: linear-gradient(to bottom, #fff 0%, #e0e0e0 100%);
+	color: gray !important;
+}
+
+ul.vertical li a
+{
+	color: #2d6ca2;
+	font-weight: bold;
+}

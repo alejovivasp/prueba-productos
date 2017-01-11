@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="css/foundation-6.2.3.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/foundation-icons-3.0.0.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/motion-ui-1.1.1.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/app.css"/>	
+ 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta charset="UTF-8">
+	<title>Prueba Productos</title>
+</head>
+<body>
+	<noscript>
+		<div class="it-no-script">
+			<div>
+				<i class="fi-alert"></i>
+				<p>#{mensajes['noScript1']}</p>
+				<p>#{mensajes['noScript2']}</p>
+				<p>#{mensajes['noScript3']}</p>
+			</div>
+		</div>
+	</noscript>
+	
+	<div id="Contenido"></div>
+	
+	<script id="VistaTablaProductos" type="text/template">
+
+<div class="top-bar">
+  <div class="top-bar-left">
+    <ul class="dropdown menu" data-dropdown-menu>
+      <li class="menu-text">Compras.com</li>
+	  <li>
+		 <a class="ancla-carrito" href="#carrito/">
+			<div class="row row-ancla-carrito-badge"><span class="badge ancla-carrito-badge">{{numeroProductosCarrito}}</span></div>
+			<div class="row"><i class="fi-shopping-cart icono-carrito"></i></div>
+		 </a>
+	  </li>
+	  <li><a href="documentacion.html">?</a></li>
+    </ul>
+  </div>
+  <div class="top-bar-right">
+    <ul class="menu">
+	   <li><input id="Buscar" type="search" placeholder="Buscar" value="{{filtro.nombre}}"/></li>
+	   <li><button id="BotonBuscar" type="button" class="button boton-izquierda"><i class="fi-magnifying-glass" /></button></li>
+	   <li><button id="DesplegarOcultarFiltro" class="button"><i class="fi-filter" /></button></li>
+    </ul>
+  </div>
+</div>
+
+<div id="ErrorGeneral" class="alert hide callout" data-closable>
+  	<h5>Se presento un error al realizar la operaci&oacute;n</h5>
+	<button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+	   	<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+<br/>
+
+<div class="row">
+	<div class="columns medium-3">
+		<div id="Filtros">		
+		<ul class="menu vertical">
+  			<li>
+				<a>Categorias</a>
+				<ul class="nested vertical menu">
+					{[ _.each( categories, function( item ){ ]}
+      					<li>
+							<input id="{{item.categori_id}}" {{ filtro.categories.includes( '' + item.categori_id ) ? 'checked' : '' }} type="checkbox" name="FiltroCategorias"><label for="{{item.categori_id}}">{{item.name}}</label>
+						</li>
+					{[ }); ]}
+    			</ul>
+			</li>
+  			<li>
+				<a>Disponibilidad</a>
+				<ul class="nested vertical menu">
+					<li> <input id="FiltroDisponibles" {{filtro.disponibles ? 'checked' : ''}}  type="checkbox" name="FiltroDisponible"><label for="FiltroDisponibles">Disponible</label> </li>
+					<li> <input id="FiltroAgotados"    {{filtro.agotados    ? 'checked' : ''}} type="checkbox" name="FiltroAgotado"><label for="FiltroAgotados">Agotado</label> </li>
+				</ul>
+			</li>
+			<li>
+				<a>Los mas vendidos</a>
+				<ul class="nested vertical menu">
+					<li> <input id="FiltroMasVendidos" {{filtro.best_seller ? 'checked' : ''}}  type="checkbox" name="FiltroMasVendidos"><label for="FiltroMasVendidos">Solo los mejor vendidos</label> </li>
+				</ul>
+			</li>
+			<li>
+				<a>Precio</a>
+				<ul class="nested vertical menu">
+					<li><input type="radio" name="precio" value="cualquierprecio" id="cualquierprecio" {{filtro.precio === 'cualquierprecio' ? 'checked': ''}}><label for="cualquierprecio">Cualquier precio</label></li>
+					<li><input type="radio" name="precio" value="30000"           id="mayor30000"      {{filtro.precio === '30000' ? 'checked': ''}}><label for="mayor30000">Mayor a 30000</label></li>
+    				<li><input type="radio" name="precio" value="10000"           id="menor10000"      {{filtro.precio === '10000' ? 'checked': ''}}><label for="menor10000">Menor a 10000</label></li>
+				</ul>
+			</li>
+		</ul>
+		<a id="AplicarFiltro" class="button expanded">Aplicar</a>
+		</div>
+	</div>
+
+	{[ if( datosFiltrados.length === 0 ){ ]}
+    <br/>
+	<div class="columns medium-9">
+		<div class="callout alert text-center">
+		No se encontraron datos.
+		</div>
+	</div>	
+	{[ }else{ ]}
+
+	<div class="columns medium-9">			
+			<div class="callout fila-producto">
+				<div class="row">
+					<div class="columns small-6">Se encontraron {{datosFiltrados.length}} productos</div>
+					<div class="columns small-6">
+						<select id="Ordenamiento" class="ordenamiento">
+							<option >Ordenar por</option>
+							<option value="nombre"      {{filtro.ordenar === 'nombre' ? 'selected': ''}}>Nombre</option>
+							<option value="mayorprecio" {{filtro.ordenar === 'mayorprecio' ? 'selected': ''}}>Mayor precio</option>
+							<option value="menorprecio" {{filtro.ordenar === 'menorprecio' ? 'selected': ''}}>Menor precio</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		{[ _.each( datosFiltrados, function( item , index ){ ]}
+			<div class="callout {{ index%2 == 0 ? 'secondary' : ''}} fila-producto">
+				<div class="row">
+					<div class="columns small-7 titulo-nombre-producto"> <h4>{{item.name}}</h4></div>
+					<div class="columns small-5">
+						{[ if( item.available ){ ]}
+						<a class="button boton-comprar" href="#carrito/{{item.id}}">Comprar</a>
+						{[ }else{ ]}
+						<a class="button boton-comprar boton-deshabilitado secondary" href="" onclick="return false;">Comprar</a>
+						{[ } ]}
+					</div>
+				</div>
+				<div class="row">
+					<div class="columns medium-4">
+						<img src="{{item.img}}?t={{item.id}}" style="width:100%"/>
+					</div>
+					<div class="columns medium-3">
+						<div class="row">
+							<div class="columns small-12 precio">${{item.price}}</div>
+						</div>
+						<div class="row">
+							<div class="columns small-12">{{item.available ? 'Disponible' :'Agotado'}}</div>
+						</div>
+						<div class="row">
+							<div class="columns small-12">{{item.best_seller ? '<i class="fi-star"/> Mejor vendido': ''}}</div>
+						</div>
+					</div>
+					<div class="columns medium-5">
+						<div class="row">
+							<div class="columns small-12">Categorias: {{ productos.vista.getNombreCategoriaPorId(item.categories,categories) }}</div>
+						</div>
+						<div class="row">
+							<div class="columns small-12">{{item.description}}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{[ }); ]}
+	</div>
+
+	{[ } ]}
+	
+</div>
+	</script>	
+
+
+	<script id="VistaTablaCarrito" type="text/template">
+
+<div class="top-bar">
+  <div class="top-bar-left">
+    <ul class="dropdown menu" data-dropdown-menu>
+      <li class="menu-text">Compras.com</li>
+	  <li><a href="documentacion.html">?</a></li>	
+    </ul>
+  </div>
+  <div class="top-bar-right">
+    <ul class="menu">
+     	<li><a class="button boton-izquierda" href="#productos/">Seguir comprando</a></li>	
+    </ul>
+  </div>
+</div>
+
+<div id="ErrorGeneral" class="alert hide callout" data-closable>
+  	<h5>Se presento un error al realizar la operaci&oacute;n</h5>
+	<button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+	   	<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+
+<div class="row">	
+
+	<div class="columns medium-4">
+		<div class="row">
+			<i class="fi-shopping-cart icono-carrito"></i>
+		</div>
+		<div class="row">
+		 <h6>N&uacute;mero de art&iacute;culos : <span id="NumeroProductos">{{numeroProductosCarrito}}</span></h6>
+		</div>
+		<div class="row">
+		Costo total: <span id="CostoTotal">${{costoTotal}}	</span>
+		</div>
+</div>
+
+	{[ if( products.length === 0 ){ ]}
+    	<br/>
+		<div class="columns medium-8">
+			<div class="callout alert text-center">
+			No tiene productos en su carrito de compras.
+			</div>
+		</div>	
+	{[ }else{ ]}
+		<br/>
+	
+	<div class="columns medium-8">
+		{[ _.each( products, function( item , index ){ ]}
+			<div class="row callout {{ index%2 == 0 ? 'secondary' : ''}} fila-producto" data-closable="slide-out-right">
+				<div class="row">
+					<div class="columns small-7 titulo-nombre-producto"> <h4>{{item.name}}</h4></div>
+					<div class="columns small-5">
+						<button id="{{item.id}}" class="close-button" name="EliminarProducto" aria-label="Dismiss alert" type="button" data-close>
+    						<span aria-hidden="true"><i id="{{item.id}}" class="fi-trash icono-borrar"/></span>
+  						</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="columns medium-4">
+						<img src="{{item.img}}?t={{item.id}}" style="width:100%"/>
+					</div>
+					<div class="columns medium-3">
+						<div class="row">
+							<div class="columns small-12 precio">${{item.price}}</div>
+						</div>
+						<div class="row">
+							<div class="columns small-12">{{item.available ? 'Disponible' :'Agotado'}}</div>
+						</div>
+						<div class="row">
+							<div class="columns small-12">{{item.best_seller ? '<i class="fi-star"/> Mejor vendido': ''}}</div>
+						</div>
+					</div>
+					<div class="columns medium-5">
+						<div class="row">
+							<div class="columns small-12">Categorias: {{ productos.vista.getNombreCategoriaPorId(item.categories,categories) }}</div>
+						</div>
+						<div class="row">
+							<div class="columns small-12">{{item.description}}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{[ }); ]}
+	</div>
+
+	{[ } ]}	
+
+</div>
+	</script>
+
+	<script type="text/javascript" src="js/dependencias/jquery-2.2.2.min.js"></script>
+	<script type="text/javascript" src="js/dependencias/underscore-1.8.3.min.js"></script>
+	<script type="text/javascript" src="js/dependencias/backbone-1.3.3.min.js"></script>
+	<script type="text/javascript" src="js/dependencias/foundation-6.2.3.min.js"></script> 
+	<script type="text/javascript" src="js/app/Util.js"></script>	
+	<script type="text/javascript" src="js/app/Carrito.js"></script>
+	<script type="text/javascript" src="js/app/CarritoDao.js"></script>
+	<script type="text/javascript" src="js/app/ProductosCategorias.js"></script>
+	<script type="text/javascript" src="js/app/VistaProductos.js"></script>
+	<script type="text/javascript" src="js/app/VistaCarrito.js"></script>
+	<script type="text/javascript" src="js/app/Router.js"></script>
+ 			
+</body>
+</html>
